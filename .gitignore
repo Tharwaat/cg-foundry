@@ -1,0 +1,45 @@
+# Maven
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Gradle
+/build/
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDEs
+/.idea/
+/*.iml
+*.ipr
+*.iws
+/.vscode/
+/*.sw?
+
+# Environment files
+.env
+
+# Java
+*.class
+
+# Package distributions
+*.jar
+*.war
+*.ear
+
+# Test reports
+/test-output/
+/surefire-reports/
+/jacoco.exec
+
+# Spring Boot specific
+spring.log
+# Eclipse specific
+.classpath
+.project
