@@ -1,0 +1,31 @@
+server:
+  shutdown: graceful
+  error:
+    include-message: always
+    include-binding-errors: always
+  port: 8080
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  datasource:
+    url: jdbc:postgresql://${PGSQL_HOST:localhost}:${PGSQL_PORT:5432}/${PGSQL_DB_NAME:cgfoundry_dev}
+    username: ${PGSQL_USERNAME:root}
+    password: ${PGSQL_PASSWORD:root}
+  liquibase:
+    change-log: "classpath:db/db.chagelog.xml"
+    enabled: true
+#  cache:
+#    type: redis
+#  data:
+#    redis:
+#      host: localhost
+#      port: 6379
+#      password: password123
+
+
+
+host:
+  name: http://localhost
