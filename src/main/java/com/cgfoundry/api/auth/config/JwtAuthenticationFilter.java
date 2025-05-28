@@ -1,6 +1,5 @@
 package com.cgfoundry.api.auth.config;
 
-import com.cgfoundry.api.user.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
@@ -9,19 +8,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
-import org.springframework.security.web.util.matcher.AndRequestMatcher;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.http.HttpHeaders;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
-
-import static org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher.withDefaults;
+import java.util.Optional;
 
 @Component
 @Slf4j
@@ -36,32 +32,47 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String path = request.getServletPath();
-        boolean isPublic = allowedPaths.stream().anyMatch(pattern -> pathMatcher.match(pattern, path));
-        if (isPublic) {
+
+        if (isRequestPathAllowed(request)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String requestHeader = request.getHeader("Authorization");
-        if (requestHeader != null && requestHeader.startsWith("Bearer")) {
-            String token = requestHeader.substring(7);
-            try {
-                String email = this.jwtService.getEmailFromToken(token);
-                Boolean validateToken = this.jwtService.validateToken(token, email);
-                if (validateToken.equals(Boolean.TRUE)) {
-                    log.info("Valid token");
-                    filterChain.doFilter(request, response);
-                } else {
-                    log.error("Invalid token");
-                }
-            } catch (IllegalArgumentException | ExpiredJwtException | MalformedJwtException e) {
-                log.error("ERROR: ", e);
-            }   catch (Exception e) {
-                log.error("Exception");
+        String requestAuthHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+        if (requestAuthHeader != null ) {
+            String[] bearerToken = requestAuthHeader.split(" ");
+            if(bearerToken.length == 2 && bearerToken[0].equals("Bearer")) {
+                validateAuthToken(bearerToken[1]);
             }
         } else {
-            log.error("empty header");
+            log.error("Missing Authorization Header");
+        }
+        filterChain.doFilter(request, response);
+    }
+
+    private boolean isRequestPathAllowed(HttpServletRequest request) {
+        String path = request.getServletPath();
+        return allowedPaths.stream().anyMatch(pattern -> pathMatcher.match(pattern, path));
+    }
+
+    private void validateAuthToken(String token) {
+        try {
+            Optional<Authentication> authenticatedUser = this.jwtService.validateToken(token);
+            if (authenticatedUser.isPresent()) {
+                log.info("Valid token: {}", authenticatedUser.get());
+
+                SecurityContextHolder.getContext().setAuthentication(authenticatedUser.get());
+            } else {
+                log.error("Invalid token");
+                SecurityContextHolder.clearContext();
+            }
+        } catch (IllegalArgumentException exception) {
+            log.error("Illegal Argument: ", exception);
+        } catch (MalformedJwtException exception) {
+            log.error("Malformed Token: ", exception);
+        } catch (ExpiredJwtException exception) {
+            log.error("Expired Token: ", exception);
         }
     }
 }

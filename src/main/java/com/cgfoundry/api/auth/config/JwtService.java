@@ -1,15 +1,19 @@
 package com.cgfoundry.api.auth.config;
 
+import com.cgfoundry.api.user.UserAuthService;
+import com.cgfoundry.api.user.UserDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 @Component
@@ -17,6 +21,11 @@ public class JwtService {
     public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
     private final String secret = "afafasfafafasfasfasfafacasdasfasxASFACASDFACASDFASFASFDAFASFASDAADSCSDFADCVSGCFVADXCcadwavfsfarvf";
     private final SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
+    private final UserAuthService userAuthService;
+
+    public JwtService(UserAuthService userAuthService) {
+        this.userAuthService = userAuthService;
+    }
 
     public String getEmailFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
@@ -35,7 +44,7 @@ public class JwtService {
         return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
     }
 
-    private Boolean isTokenExpired(String token) {
+    private boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
     }
@@ -55,8 +64,12 @@ public class JwtService {
                 .compact();
     }
 
-    public Boolean validateToken(String token, String userEmail) {
-        final String email = getEmailFromToken(token);
-        return (email.equals(userEmail) && !isTokenExpired(token));
+    public Optional<Authentication> validateToken(String token) {
+        String email = getEmailFromToken(token);
+        UserDto user = userAuthService.getUserByEmail(email).orElseThrow();
+        if (email.equals(user.getEmail()) && !isTokenExpired(token)) {
+            return Optional.of(userAuthService.getAuthenticatedUser(user));
+        }
+        return Optional.empty();
     }
 }
