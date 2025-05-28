@@ -1,0 +1,63 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_user_table
+      author: Tharwat
+      changes:
+        -  createTable:
+             schemaName: users
+             tableName: user
+             columns:
+               -  column:
+                    name: id
+                    type: uuid
+                    constraints:
+                      primaryKey: true
+               - column:
+                    name: email
+                    type: varchar(64)
+                    constraints:
+                      nullable: false
+                      unique: true
+               -  column:
+                    name: password
+                    type: varchar(64)
+                    constraints:
+                      nullable: false
+               - column:
+                   name: first_name
+                   type: varchar(64)
+                   constraints:
+                     nullable: false
+               - column:
+                   name: last_name
+                   type: varchar(64)
+                   constraints:
+                     nullable: false
+               - column:
+                   name: country
+                   type: varchar(64)
+                   constraints:
+                     nullable: false
+               - column:
+                   name: phone_number
+                   type: varchar(64)
+                   constraints:
+                     nullable: false
+               - column:
+                    name: is_active
+                    type: boolean
+                    defaultValue: false
+               - column:
+                    name: is_verified
+                    type: boolean
+                    defaultValue: false
+               - column:
+                    name: created_at
+                    type: date
+                    constraints:
+                      nullable: false
+               - column:
+                    name: updated_at
+                    type: date
+                    constraints:
+                      nullable: false
