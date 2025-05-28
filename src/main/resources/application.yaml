@@ -1,4 +1,6 @@
 server:
+  servlet:
+    context-path: /api
   shutdown: graceful
   error:
     include-message: always

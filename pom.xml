@@ -14,20 +14,27 @@
 	<name>CG Foundry API</name>
 	<description>CG Foundry Learning Platform API</description>
 	<url/>
+
 	<licenses>
 		<license/>
 	</licenses>
+
 	<developers>
-		<developer/>
+		<developer>
+			<name>Ahmed Tharwat</name>
+		</developer>
 	</developers>
+
 	<scm>
 		<connection/>
 		<developerConnection/>
 		<tag/>
 		<url/>
 	</scm>
+
 	<properties>
 		<java.version>21</java.version>
+		<jsobwebtoken.version>0.12.6</jsobwebtoken.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -42,6 +49,25 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>${jsobwebtoken.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>${jsobwebtoken.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>${jsobwebtoken.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
