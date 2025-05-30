@@ -9,6 +9,12 @@
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
 
-<!--    <includeAll path="classpath:db/changelog/"/>-->
+    <changeSet id="create_schemas" author="Tharwat">
+        <sql>
+            CREATE SCHEMA IF NOT EXISTS users;
+        </sql>
+    </changeSet>
+    <includeAll path="classpath:db/changelog/tables"/>
+<!--    <includeAll path="classpath:db/changelog/indexes"/>-->
 
 </databaseChangeLog>

@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id:  create_user_email_idx
+      author:  tharwat
+      changes:
+        - createIndex:
+            schemaName: users
+            tableName: user
+            clustered: true
+            columns:
+              - column:
+                  name: email
+            indexName: idx_user_email
