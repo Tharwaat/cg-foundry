@@ -1,19 +1,38 @@
-package com.cgfoundry.api.user;
+package com.cgfoundry.api.user.student;
 
+import com.cgfoundry.api.profile.student.StudentProfileRepository;
+import com.cgfoundry.api.profile.student.model.StudentProfile;
+import com.cgfoundry.api.user.UserDto;
+import com.cgfoundry.api.user.UserRepository;
 import com.cgfoundry.api.user.model.User;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-@Service
-public class UserServiceImpl implements UserService {
+import java.util.Optional;
 
-    @Override
-    public UserDto findByEmail(String email) {
-        return new UserDto("ahmed@gmail.com", "Password");
+@Service
+@Slf4j
+@AllArgsConstructor
+public class StudentService  {
+
+    private final UserRepository userRepository;
+    private final StudentProfileRepository studentProfileRepository;
+
+    public Optional<StudentDto> findByEmail(String email) {
+        Optional<User> student = userRepository.findByEmail(email);
+        return student.map(User::toStudentDto);
     }
 
-    @Override
-    public UserDto save(UserDto newUser) {
-        User userToSave = newUser.toNewUserEntity();
-        return UserDto.builder().build();
+    public StudentDto save(StudentDto newUser) {
+        User userToSave = newUser.toNewStudentEntity();
+        User savedUser = userRepository.save(userToSave);
+
+        StudentProfile studentProfileToSave = newUser.toNewStudentProfile();
+        studentProfileToSave.setUser(savedUser);
+        StudentProfile savedStudentProfile = studentProfileRepository.save(studentProfileToSave);
+        savedUser.setStudentProfile(savedStudentProfile);
+
+        return savedUser.toStudentDto();
     }
 }

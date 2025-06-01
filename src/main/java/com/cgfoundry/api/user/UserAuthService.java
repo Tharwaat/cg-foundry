@@ -1,5 +1,8 @@
 package com.cgfoundry.api.user;
 
+import com.cgfoundry.api.user.student.StudentDto;
+import com.cgfoundry.api.user.student.StudentService;
+import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -8,9 +11,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class UserAuthService {
-    public Optional<UserDto> getUserByEmail(String email) {
-        return Optional.of(new UserDto("ahmed@gmail.com", "Password"));
+
+    private final StudentService studentService;
+
+    public Optional<StudentDto> getUserByEmail(String email) {
+        return studentService.findByEmail(email);
     }
 
     public Authentication getAuthenticatedUser(UserDto user) {

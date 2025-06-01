@@ -4,5 +4,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface UserService {
-    UserDto getUser(String email);
+    UserDto findByEmail(String email);
+    UserDto save(UserDto newUser);
 }
