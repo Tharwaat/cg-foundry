@@ -29,12 +29,12 @@ databaseChangeLog:
                    type: varchar(256)
                - column:
                     name: created_at
-                    type: date
+                    type: timestamp with time zone
                     constraints:
                       nullable: false
                - column:
                     name: updated_at
-                    type: date
+                    type: timestamp with time zone
                     constraints:
                       nullable: false
 

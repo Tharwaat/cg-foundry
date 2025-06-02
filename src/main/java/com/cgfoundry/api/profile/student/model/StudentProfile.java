@@ -39,6 +39,7 @@ public class StudentProfile {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    @ToString.Exclude
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(name = "user_id")

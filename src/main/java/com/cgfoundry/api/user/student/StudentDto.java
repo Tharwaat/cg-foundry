@@ -1,12 +1,12 @@
 package com.cgfoundry.api.user.student;
 
 import com.cgfoundry.api.profile.student.model.StudentProfile;
+import com.cgfoundry.api.role.Role;
+import com.cgfoundry.api.role.Roles;
 import com.cgfoundry.api.user.UserDto;
 import com.cgfoundry.api.user.model.User;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-
-import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -30,8 +30,6 @@ public class StudentDto extends UserDto {
                 .password(this.getPassword())
                 .isActive(false)
                 .isVerified(false)
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .build();
     }
 
@@ -43,8 +41,6 @@ public class StudentDto extends UserDto {
                 .education(this.education)
                 .interest(this.interest)
                 .objective(this.objective)
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .build();
     }
 }

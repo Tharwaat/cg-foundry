@@ -1,16 +1,21 @@
 package com.cgfoundry.api.auth.config;
 
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class SecurityService {
 
-    @Bean
-    public PasswordEncoder encoder() {
-        return new BCryptPasswordEncoder(16);
+    private final PasswordEncoder passwordEncoder;
+
+    public boolean verifyPassword(String encodedPassword, String password) {
+        return passwordEncoder.matches(password, encodedPassword);
+    }
+
+    public String encrypt(String rawPassword) {
+        return passwordEncoder.encode(rawPassword);
     }
 }

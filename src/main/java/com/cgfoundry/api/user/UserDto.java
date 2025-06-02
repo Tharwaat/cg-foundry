@@ -14,6 +14,7 @@ import java.util.UUID;
 @SuperBuilder
 public class UserDto {
     private UUID id;
+    private String role;
     private String email;
     private String password;
     private String firstName;

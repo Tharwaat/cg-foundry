@@ -2,6 +2,7 @@ package com.cgfoundry.api.user.model;
 
 
 import com.cgfoundry.api.profile.student.model.StudentProfile;
+import com.cgfoundry.api.role.Role;
 import com.cgfoundry.api.user.UserDto;
 import jakarta.persistence.*;
 import lombok.*;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Getter
 @Builder
 @Entity
+@ToString
 @Table(name="user", schema = "users")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -48,10 +50,15 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, optional = false)
     private StudentProfile studentProfile;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "role_id", referencedColumnName = "id")
+    private Role role;
+
     public UserDto toUserDto() {
         return UserDto.builder()
                 .id(this.id)
                 .email(this.email)
+                .role(this.role.getName())
                 .phoneNumber(this.phoneNumber)
                 .password(this.password)
                 .firstName(this.firstName)

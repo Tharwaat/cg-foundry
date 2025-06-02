@@ -7,11 +7,16 @@ databaseChangeLog:
              schemaName: users
              tableName: user
              columns:
-               -  column:
+               - column:
                     name: id
                     type: uuid
                     constraints:
                       primaryKey: true
+               - column:
+                   name: role_id
+                   type: int
+                   constraints:
+                     nullable: false
                - column:
                     name: email
                     type: varchar(64)
@@ -53,11 +58,21 @@ databaseChangeLog:
                     defaultValue: false
                - column:
                     name: created_at
-                    type: date
+                    type: timestamp with time zone
                     constraints:
                       nullable: false
                - column:
                     name: updated_at
-                    type: date
+                    type: timestamp with time zone
                     constraints:
                       nullable: false
+
+        - addForeignKeyConstraint:
+            baseColumnNames: role_id
+            baseTableName: user
+            baseTableSchemaName: users
+            constraintName: fk_user_role
+            referencedColumnNames: id
+            referencedTableName: role
+            referencedTableSchemaName: users
+            validate: true
