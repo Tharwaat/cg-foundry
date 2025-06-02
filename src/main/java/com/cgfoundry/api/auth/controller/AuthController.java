@@ -4,13 +4,12 @@ import com.cgfoundry.api.auth.config.JwtService;
 import com.cgfoundry.api.auth.controller.dto.LoginRequest;
 import com.cgfoundry.api.auth.controller.dto.LoginResponse;
 import com.cgfoundry.api.auth.controller.dto.StudentRegisterRequest;
+import com.cgfoundry.api.exception.UserAlreadyRegisteredException;
 import com.cgfoundry.api.user.UserDto;
-import com.cgfoundry.api.user.student.StudentDto;
 import com.cgfoundry.api.user.student.StudentService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,27 +22,35 @@ import java.util.Optional;
 public class AuthController {
 
     private final JwtService jwtService;
-    private final StudentService userService;
+    private final StudentService studentService;
 
     public AuthController(JwtService jwtService, StudentService userService) {
         this.jwtService = jwtService;
-        this.userService = userService;
+        this.studentService = userService;
     }
 
     @PostMapping("/login")
     ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
-        Optional<StudentDto> user = userService.findByEmail(request.email());
+        Optional<UserDto> user = studentService.findByEmail(request.email());
         if (user.isPresent()) {
-            String token = jwtService.generateToken(user.get().getEmail());
-            return ResponseEntity.ok(new LoginResponse(user.get().getEmail(), token));
+            UserDto foundUser = user.get();
+            if (studentService.verifyPassword(foundUser, request.password())) {
+                String token = jwtService.generateToken(user.get().getEmail());
+                return ResponseEntity.ok(new LoginResponse(user.get().getEmail(), token));
+            } else {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/register")
-    ResponseEntity<LoginResponse> register(@Valid @RequestBody StudentRegisterRequest request) {
-        StudentDto newUser = request.toStudentUserDto();
-        UserDto user = userService.save(newUser);
+    ResponseEntity<LoginResponse> register(@Valid @RequestBody StudentRegisterRequest request)
+            throws UserAlreadyRegisteredException {
+        if (studentService.findByEmail(request.getEmail()).isPresent()) {
+            throw new UserAlreadyRegisteredException("This email is already registered.");
+        }
+        UserDto user = studentService.save(request.toStudentUserDto());
         String token = jwtService.generateToken(user.getEmail());
         return ResponseEntity.ok(new LoginResponse(user.getEmail(), token));
     }

@@ -7,8 +7,6 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -37,8 +35,9 @@ public class StudentDto extends UserDto {
                 .build();
     }
 
-    public StudentProfile toNewStudentProfile() {
+    public StudentProfile toNewStudentProfile(User user) {
         return StudentProfile.builder()
+                .user(user)
                 .age(this.age)
                 .profession(this.profession)
                 .education(this.education)

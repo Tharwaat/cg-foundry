@@ -2,15 +2,13 @@ package com.cgfoundry.api.user.model;
 
 
 import com.cgfoundry.api.profile.student.model.StudentProfile;
-import com.cgfoundry.api.user.student.StudentDto;
+import com.cgfoundry.api.user.UserDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.UUID;
 
 @Setter
@@ -50,17 +48,15 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, optional = false)
     private StudentProfile studentProfile;
 
-    public StudentDto toStudentDto() {
-        return StudentDto.builder()
-                .email(this.getEmail())
-                .phoneNumber(this.getPhoneNumber())
-                .country(this.getCountry())
-                .password(this.getPassword())
-                .age(this.studentProfile.getAge())
-                .profession(this.studentProfile.getProfession())
-                .education(this.studentProfile.getEducation())
-                .interest(this.studentProfile.getInterest())
-                .objective(this.studentProfile.getObjective())
+    public UserDto toUserDto() {
+        return UserDto.builder()
+                .id(this.id)
+                .email(this.email)
+                .phoneNumber(this.phoneNumber)
+                .password(this.password)
+                .firstName(this.firstName)
+                .lastName(this.lastName)
+                .country(this.country)
                 .isActive(this.isActive)
                 .isVerified(this.isVerified)
                 .createdAt(this.createdAt)

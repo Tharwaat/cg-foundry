@@ -7,6 +7,7 @@ import com.cgfoundry.api.user.UserRepository;
 import com.cgfoundry.api.user.model.User;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -18,21 +19,24 @@ public class StudentService  {
 
     private final UserRepository userRepository;
     private final StudentProfileRepository studentProfileRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public Optional<StudentDto> findByEmail(String email) {
+    public Optional<UserDto> findByEmail(String email) {
         Optional<User> student = userRepository.findByEmail(email);
-        return student.map(User::toStudentDto);
+        return student.map(User::toUserDto);
     }
 
-    public StudentDto save(StudentDto newUser) {
+    public boolean verifyPassword(UserDto user, String password) {
+        return passwordEncoder.matches(password, user.getPassword());
+    }
+
+    public UserDto save(StudentDto newUser) {
+        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         User userToSave = newUser.toNewStudentEntity();
         User savedUser = userRepository.save(userToSave);
+        StudentProfile studentProfileToSave = newUser.toNewStudentProfile(savedUser);
+        studentProfileRepository.save(studentProfileToSave);
 
-        StudentProfile studentProfileToSave = newUser.toNewStudentProfile();
-        studentProfileToSave.setUser(savedUser);
-        StudentProfile savedStudentProfile = studentProfileRepository.save(studentProfileToSave);
-        savedUser.setStudentProfile(savedStudentProfile);
-
-        return savedUser.toStudentDto();
+        return savedUser.toUserDto();
     }
 }

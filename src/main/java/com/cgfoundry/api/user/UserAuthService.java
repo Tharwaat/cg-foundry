@@ -16,7 +16,7 @@ public class UserAuthService {
 
     private final StudentService studentService;
 
-    public Optional<StudentDto> getUserByEmail(String email) {
+    public Optional<UserDto> getUserByEmail(String email) {
         return studentService.findByEmail(email);
     }
 
