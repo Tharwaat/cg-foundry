@@ -19,6 +19,12 @@ spring:
   liquibase:
     change-log: "classpath:db/db.chagelog.xml"
     enabled: true
+
+springdoc:
+  swagger-ui:
+    path: "/docs"
+    operationsSorter: method
+
 #  cache:
 #    type: redis
 #  data:

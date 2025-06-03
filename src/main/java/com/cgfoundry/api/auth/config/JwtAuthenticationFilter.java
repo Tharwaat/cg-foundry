@@ -25,7 +25,7 @@ import java.util.Optional;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-    private final List<String> allowedPaths = List.of("/", "/auth/**");
+    private final List<String> allowedPaths = List.of("/docs/**", "/swagger-ui/**", "/v3/api-docs/**");
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     @Override

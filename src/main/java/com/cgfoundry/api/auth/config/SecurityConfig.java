@@ -36,7 +36,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         (authorize -> authorize
                                 .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
-                                .requestMatchers("/", "/auth/**").permitAll()
+                                .requestMatchers(
+                                        "/docs/**", "/swagger-ui/**", "/v3/api-docs/**",
+                                        "/auth/**"
+                                )
+                                .permitAll()
                                 .anyRequest()
                                 .authenticated()
                         )

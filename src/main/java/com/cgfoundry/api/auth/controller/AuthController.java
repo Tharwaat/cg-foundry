@@ -8,6 +8,7 @@ import com.cgfoundry.api.auth.controller.dto.StudentRegisterRequest;
 import com.cgfoundry.api.exception.UserAlreadyRegisteredException;
 import com.cgfoundry.api.user.UserDto;
 import com.cgfoundry.api.user.student.StudentService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,14 +25,14 @@ import java.util.Optional;
 @Slf4j
 @RequestMapping("/auth")
 @AllArgsConstructor
-public class AuthController {
+public class AuthController implements AuthControllerApi{
 
     private final JwtService jwtService;
     private final StudentService studentService;
     private final SecurityService securityService;
 
-    @PostMapping("/login")
-    ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+    @Override
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
         Optional<UserDto> user = studentService.findByEmail(request.email());
         if (user.isPresent()) {
             UserDto foundUser = user.get();
@@ -45,8 +46,8 @@ public class AuthController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping("/register")
-    ResponseEntity<LoginResponse> register(@Valid @RequestBody StudentRegisterRequest request)
+    @Override
+    public ResponseEntity<LoginResponse> register(@Valid @RequestBody StudentRegisterRequest request)
             throws UserAlreadyRegisteredException {
         log.info("[register()] Check if email is registered.");
         if (studentService.findByEmail(request.getEmail()).isPresent()) {
