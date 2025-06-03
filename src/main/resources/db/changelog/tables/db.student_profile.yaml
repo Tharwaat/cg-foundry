@@ -1,0 +1,51 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_profile_table
+      author: Tharwat
+      changes:
+        -  createTable:
+             schemaName: users
+             tableName: student_profile
+             columns:
+               -  column:
+                    name: user_id
+                    type: uuid
+                    constraints:
+                      primaryKey: true
+               - column:
+                   name: age
+                   type: smallint
+               - column:
+                    name: profession
+                    type: varchar(64)
+               -  column:
+                    name: education
+                    type: varchar(64)
+               - column:
+                   name: interest
+                   type: varchar(256)
+               - column:
+                   name: objective
+                   type: varchar(256)
+               - column:
+                    name: created_at
+                    type: timestamp with time zone
+                    constraints:
+                      nullable: false
+               - column:
+                    name: updated_at
+                    type: timestamp with time zone
+                    constraints:
+                      nullable: false
+
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: student_profile
+            baseTableSchemaName: users
+            constraintName: fk_user_student_profile
+            onDelete: CASCADE
+            onUpdate: RESTRICT
+            referencedColumnNames: id
+            referencedTableName: user
+            referencedTableSchemaName: users
+            validate: true

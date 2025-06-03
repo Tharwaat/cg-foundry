@@ -14,7 +14,9 @@
             CREATE SCHEMA IF NOT EXISTS users;
         </sql>
     </changeSet>
-    <includeAll path="classpath:db/changelog/tables"/>
+<!--    <includeAll path="classpath:db/changelog/tables"/>-->
 <!--    <includeAll path="classpath:db/changelog/indexes"/>-->
-
+    <include file="db/changelog/tables/db.role.yaml"/>
+    <include file="classpath:db/changelog/tables/db.user.yaml"/>
+    <include file="db/changelog/tables/db.student_profile.yaml"/>
 </databaseChangeLog>

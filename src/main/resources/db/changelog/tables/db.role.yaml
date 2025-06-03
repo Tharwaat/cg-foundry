@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_role_table
+      author: Tharwat
+      changes:
+        - createTable:
+             schemaName: users
+             tableName: role
+             columns:
+               -  column:
+                    name: id
+                    type: int
+                    constraints:
+                      primaryKey: true
+               - column:
+                    name: name
+                    type: varchar
+                    constraints:
+                      nullable: false
+                      unique: true
+
+        - addAutoIncrement:
+            columnDataType: int
+            columnName: id
+            defaultOnNull: false
+            generationType: ALWAYS
+            incrementBy: 1
+            schemaName: users
+            startWith: 1
+            tableName: role
+
+        - sql:
+            dbms: 'h2, postgresql'
+            endDelimiter: \nGO
+            splitStatements: true
+            sql:  INSERT INTO users.role (name) VALUES ('ADMIN'); 
+                  INSERT INTO users.role (name) VALUES ('STUDENT'); 
+                  INSERT INTO users.role (name) VALUES ('INSTRUCTOR');
+            stripComments: true
